@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"os"
@@ -35,6 +36,23 @@ func main() {
 	desired.Namespace = namespace
 	desired.GenerateName = "crud-typed-simple-"
 
+	// List
+	cmList, err := client.
+		CoreV1().
+		ConfigMaps(namespace).
+		List(
+			context.Background(),
+			metav1.ListOptions{},
+		)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	for _, c := range cmList.Items {
+		fmt.Printf("Existing ConfigMap name: %s\n", c.Name)
+	}
+	prompt()
+
 	// Create
 	created, err := client.
 		CoreV1().
@@ -54,6 +72,8 @@ func main() {
 		panic("Created ConfigMap has unexpected data")
 	}
 
+	prompt()
+
 	// Read
 	read, err := client.
 		CoreV1().
@@ -68,10 +88,12 @@ func main() {
 	}
 
 	fmt.Printf("Read ConfigMap %s/%s\n", namespace, read.GetName())
+	fmt.Println(read.Data["foo"])
 
 	if !reflect.DeepEqual(read.Data, desired.Data) {
 		panic("Read ConfigMap has unexpected data")
 	}
+	prompt()
 
 	// Update
 	read.Data["foo"] = "qux"
@@ -88,10 +110,12 @@ func main() {
 	}
 
 	fmt.Printf("Updated ConfigMap %s/%s\n", namespace, updated.GetName())
+	fmt.Println(read.Data["foo"])
 
 	if !reflect.DeepEqual(updated.Data, read.Data) {
 		panic("Updated ConfigMap has unexpected data")
 	}
+	prompt()
 
 	// Delete
 	err = client.
@@ -107,4 +131,16 @@ func main() {
 	}
 
 	fmt.Printf("Deleted ConfigMap %s/%s\n", namespace, created.GetName())
+}
+
+func prompt() {
+	fmt.Printf("-> Press Return key to continue.")
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		break
+	}
+	if err := scanner.Err(); err != nil {
+		panic(err)
+	}
+	fmt.Println()
 }
