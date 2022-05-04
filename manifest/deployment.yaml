@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: in-cluster-example
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: in-cluster-example
+  template:
+    metadata:
+      labels:
+        app: in-cluster-example
+    spec:
+      serviceAccountName: cm-incluster
+      containers:
+        - name: in-cluster-example
+          image: ogre0403/incluster:latest
+          imagePullPolicy: IfNotPresent
