@@ -18,6 +18,8 @@ package controllers
 
 import (
 	"context"
+	batchv1 "k8s.io/api/batch/v1"
+	corev1 "k8s.io/api/core/v1"
 
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -36,6 +38,9 @@ type SampleReconciler struct {
 //+kubebuilder:rbac:groups=sample.ntcu.edu.tw,resources=samples,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=sample.ntcu.edu.tw,resources=samples/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=sample.ntcu.edu.tw,resources=samples/finalizers,verbs=update
+
+//+kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=core,resources=configmaps,verbs=get;list;watch;create;update;patch;delete
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -58,5 +63,7 @@ func (r *SampleReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 func (r *SampleReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&samplev1alpha1.Sample{}).
+		Owns(&batchv1.Job{}).
+		Owns(&corev1.ConfigMap{}).
 		Complete(r)
 }
