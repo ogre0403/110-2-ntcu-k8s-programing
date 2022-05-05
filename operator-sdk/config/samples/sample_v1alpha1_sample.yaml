@@ -3,4 +3,6 @@ kind: Sample
 metadata:
   name: sample-sample
 spec:
-  # TODO(user): Add fields here
+  image: alpine
+  key: foo
+  value: bar-1
