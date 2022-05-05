@@ -1,0 +1,19 @@
+domain: ntcu.edu.tw
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: operator-sdk
+repo: github.com/ogre0403/110-2-ntcu-k8s-programing
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: ntcu.edu.tw
+  group: sample
+  kind: Sample
+  path: github.com/ogre0403/110-2-ntcu-k8s-programing/api/v1alpha1
+  version: v1alpha1
+version: "3"

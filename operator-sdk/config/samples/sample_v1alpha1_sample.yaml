@@ -1,0 +1,6 @@
+apiVersion: sample.ntcu.edu.tw/v1alpha1
+kind: Sample
+metadata:
+  name: sample-sample
+spec:
+  # TODO(user): Add fields here
