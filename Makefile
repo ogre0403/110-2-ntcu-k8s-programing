@@ -15,5 +15,5 @@ load-in-cluster-image:
 	kind load docker-image $(IMG):$(TAG)
 
 run-informer:
-	go run ./cmd/informer
+	go run ./cmd/informer -outside-cluster
 
