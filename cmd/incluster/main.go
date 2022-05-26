@@ -54,22 +54,9 @@ func main() {
 	}
 
 	cm := createConfigMap(clientset)
-
 	go func() {
 		for {
-			read, err := clientset.
-				CoreV1().
-				ConfigMaps(namespace).
-				Get(
-					context.Background(),
-					cm.GetName(),
-					metav1.GetOptions{},
-				)
-			if err != nil {
-				panic(err.Error())
-			}
-
-			fmt.Printf("Read ConfigMap %s/%s, value is %s\n", namespace, read.GetName(), read.Data["foo"])
+			readConfigMap(clientset, cm.GetName())
 			time.Sleep(5 * time.Second)
 		}
 	}()
@@ -81,6 +68,23 @@ func main() {
 
 	fmt.Printf("Delete ConfigMap %s/%s ", namespace, cm.GetName())
 	deleteConfigMap(clientset, cm)
+}
+
+func readConfigMap(clientset kubernetes.Interface, name string) *corev1.ConfigMap {
+	read, err := clientset.
+		CoreV1().
+		ConfigMaps(namespace).
+		Get(
+			context.Background(),
+			name,
+			metav1.GetOptions{},
+		)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	fmt.Printf("Read ConfigMap %s/%s, value is %s\n", namespace, read.GetName(), read.Data["foo"])
+	return read
 }
 
 func createConfigMap(client kubernetes.Interface) *corev1.ConfigMap {
