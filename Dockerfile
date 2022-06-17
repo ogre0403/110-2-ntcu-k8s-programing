@@ -11,9 +11,13 @@ RUN go mod download
 
 # Copy the go source
 COPY cmd/ cmd/
+COPY pkg/ pkg/
+
+ARG SAMPLE
+ENV SAMPLE=$SAMPLE
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o main ./cmd/incluster
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o main ./cmd/${SAMPLE}
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
